@@ -38,7 +38,14 @@ public class BoardController {
 		
 		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
 		int insertFlag = boardDao.boardWriteDao(bname, btitle, bcontent);
-		System.out.println(insertFlag);
+//		System.out.println(insertFlag);
+		if(insertFlag == 1) {//글 쓰기 성공 시 경고창 띄우기 
+			
+			model.addAttribute("msg", "글 입력 성공!");
+			model.addAttribute("url", "boardList");
+			
+			return "alert";
+		} 
 		
 		return "redirect:boardList";
 	}
@@ -83,5 +90,22 @@ public class BoardController {
 		return "alert";
 	}
 	
+	@RequestMapping(value = "/contentView")//글 내용 보기
+	public String contentView(HttpServletRequest request, Model model) {
+		
+		String bnum = request.getParameter("bnum");//내용을 출력할 글의 번호(유저가 클릭한 글 번호)		
+		
+		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
+		BoardDto boardDto = boardDao.contentViewDao(bnum);
+		model.addAttribute("bDto", boardDto);
+		
+		return "content_view";
+	}
 	
+			
+			
+			
+			
+			
+			
 }
