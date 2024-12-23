@@ -8,11 +8,14 @@
 <title>경고창</title>
 </head>
 <body>
+	 
 	<script type="text/javascript">
 		var msg = "${msg}";
 		var url = "${url}";
 		alert(msg);
 		location.href=url;
 	</script>
+	
+	
 </body>
 </html>

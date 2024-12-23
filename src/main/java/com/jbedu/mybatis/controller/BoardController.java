@@ -24,6 +24,11 @@ public class BoardController {
 		return "write_form";
 	}
 	
+	@RequestMapping(value = "/delete_form")
+	public String delete_form(HttpServletRequest request, Model model) {
+		return "delete_form";
+	}
+	
 	@RequestMapping(value = "/writeOk")
 	public String boardWrite(HttpServletRequest request, Model model) {
 		
@@ -32,7 +37,8 @@ public class BoardController {
 		String bcontent = request.getParameter("bcontent");
 		
 		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
-		boardDao.boardWriteDao(bname, btitle, bcontent);
+		int insertFlag = boardDao.boardWriteDao(bname, btitle, bcontent);
+		System.out.println(insertFlag);
 		
 		return "redirect:boardList";
 	}
@@ -49,9 +55,33 @@ public class BoardController {
 		return "boardList";
 	}
 	
+	@RequestMapping(value = "/deleteOk")
+	public String boardDelete(HttpServletRequest request, Model model) {
+		
+		String bnum = request.getParameter("bnum");//삭제할 글의 번호		
+		
+		BoardDao boardDao = sqlSession.getMapper(BoardDao.class);
+		int deleteFlag = boardDao.boardDeleteDao(bnum);
+		//System.out.println("삭제성공여부:"+deleteFlag);
+		
+		if(deleteFlag == 0) {//존재하지 않는 글번호 삭제 시도->삭제 실패
+			
+			model.addAttribute("msg", "글 삭제 실패!!이미 삭제된 글번호 입니다.");
+			model.addAttribute("url", "boardList");
+			
+			return "alert";
+		} 
+		
+		return "redirect:boardList";
+	}
 	
-	
-	
+	@RequestMapping(value = "/alert2") //경고창 테스트용 맵핑
+	public String alert(Model model) {
+		model.addAttribute("msg", "글 삭제 실패!!\n이미 삭제된 글번호 입니다.");
+		model.addAttribute("url", "boardList");
+		
+		return "alert";
+	}
 	
 	
 }
